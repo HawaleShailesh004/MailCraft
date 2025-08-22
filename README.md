@@ -36,7 +36,7 @@ MailCraft leverages advanced AI to generate highly personalized cold emails for 
 
 | Page | Screenshot / GIF |
 |------|-----------------|
-| Landing Page | ![Landing](screenshots/landing.gif) |
+| Landing Page | ![Landing](/screenshots/landing.gif) |
 | Email Wizard | ![Wizard](screenshots/wizard.gif) |
 | Templates | ![Templates](screenshots/templates.gif) |
 
