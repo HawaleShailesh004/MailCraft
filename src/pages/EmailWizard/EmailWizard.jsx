@@ -22,6 +22,7 @@ const EmailWizard = () => {
       jobUrl: "",
     },
     personalInfo: {
+      name: "",
       skills: [],
       projects: [],
       experience: [],

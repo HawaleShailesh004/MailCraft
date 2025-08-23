@@ -50,7 +50,7 @@ MailCraft leverages advanced AI to generate highly personalized cold emails for 
 ## 🛠 Tech Stack
 
 - **Frontend:** ReactJS, Tailwind CSS, Framer Motion, React Router
-- **AI Backend:** GROQ API, LLaMA-70b / 3.3Instant
+- **AI Backend:** GROQ API, Gemini 2.5 / 2.0 Flash, LLaMA 8B Instant
 - **Other Libraries:** Rich text editor, Lucide icons
 - **Storage:** LocalStorage (future: database integration)
 

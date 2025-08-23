@@ -89,6 +89,7 @@ const analyzeResumeWithGroq = async (rawText) => {
 You are an expert Resume Analyzer. Extract structured JSON:
 
 personalInfo: {
+  name: "Name of the person whose resume is being analyzed",
   skills: [ "skill1", "skill2" ],
   projects: [
     { title: "Project", details: "Tech + contributions" }
