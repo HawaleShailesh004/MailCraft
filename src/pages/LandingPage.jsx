@@ -55,7 +55,7 @@ const LandingPage = () => {
       <section className="relative overflow-hidden pt-20 pb-32">
         <div className="absolute inset-0 gradient-hero opacity-10"></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:mt-10 mt-15">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
             <motion.div
               className="mb-12 lg:mb-0"
