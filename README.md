@@ -6,7 +6,9 @@ MailCraft leverages advanced AI to generate highly personalized cold emails for 
 
 ---
 
-**Live Demo** - https://mail-craftt.vercel.app
+## Live Demo
+
+👉 [MailCraft](https://mail-craftt.vercel.app)
 
 ## 🌟 Key Features
 
