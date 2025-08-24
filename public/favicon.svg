@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000"><g clip-path="url(#SvgjsClipPath1107)"><rect width="1000" height="1000" fill="#ffffff"></rect><g transform="matrix(15.625,0,0,15.625,0,0)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Gradient Background -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb; stop-opacity:1"></stop> <!-- blue-600 -->
+      <stop offset="100%" style="stop-color:#9333ea; stop-opacity:1"></stop> <!-- purple-600 -->
+    </linearGradient>
+  <clipPath id="SvgjsClipPath1107"><rect width="1000" height="1000" x="0" y="0" rx="500" ry="500"></rect></clipPath></defs>
+  <rect x="0" y="0" width="64" height="64" rx="12" fill="url(#grad)"></rect>
+
+  <!-- Mail Icon (white, like Lucide's Mail) -->
+  <path d="M16 20h32c2.2 0 4 1.8 4 4v16c0 2.2-1.8 4-4 4H16c-2.2 0-4-1.8-4-4V24c0-2.2 1.8-4 4-4zm0 0l16 12L48 20" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg></svg></g></g></svg>
