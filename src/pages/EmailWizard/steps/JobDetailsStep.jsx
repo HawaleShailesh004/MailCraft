@@ -10,7 +10,7 @@ const JobDetailsStep = ({ data, update }) => {
     }
 
     const Extraction = await getJobDetailsFromDescription(data.jobDescription);
-    console.log("AI Extraction Result:", Extraction);
+    // console.log("AI Extraction Result:", Extraction);
 
     update("jobDetails", Extraction);
     alert("✨ Smart extraction applied! (Demo values filled)");

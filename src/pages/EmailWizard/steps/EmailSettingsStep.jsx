@@ -1,7 +1,7 @@
 import { Sparkles } from "lucide-react";
 
 const EmailSettingsStep = ({ data, update, generateEmail, isGenerating }) => {
-  console.log("From Email Settings", data);
+  // console.log("From Email Settings", data);
   return (
     <div className="space-y-6">
       <h3 className="text-2xl font-bold text-gray-900 mb-6">Email Settings</h3>
@@ -36,8 +36,10 @@ const EmailSettingsStep = ({ data, update, generateEmail, isGenerating }) => {
       min-w-0 sm:min-w-[200px] 
       flex-shrink
     "
-              value={selectedFilter}
-              onChange={(e) => setSelectedFilter(e.target.value)}
+              value={data.emailSettings.length}
+              onChange={(e) =>
+                update("emailSettings", { length: e.target.value })
+              }
             >
               <option value="all">All Templates</option>
               <option value="high-performance">High Performance (85%+)</option>

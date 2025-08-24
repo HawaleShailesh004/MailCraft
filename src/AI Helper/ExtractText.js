@@ -41,7 +41,7 @@ const handleDOCXFile = async (file) => {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const { value } = await mammoth.extractRawText({ arrayBuffer });
-    console.log(value);
+    // console.log(value);
     return await analyzeResumeWithGroq(value);
   } catch (err) {
     console.error("Error extracting text from DOCX:", err);
@@ -53,7 +53,7 @@ const handleDOCXFile = async (file) => {
 const handleTXTFile = async (file) => {
   try {
     const text = await file.text();
-    console.log(text);
+    // console.log(text);
     return await analyzeResumeWithGroq(text);
   } catch (err) {
     console.error("Error extracting text from TXT:", err);
@@ -122,7 +122,7 @@ personalInfo: {
   });
 
   try {
-    console.log("Data from Extract", resp.choices[0]?.message?.content || "");
+    // console.log("Data from Extract", resp.choices[0]?.message?.content || "");
     return resp.choices[0]?.message?.content || "{}";
   } catch {
     return {};
