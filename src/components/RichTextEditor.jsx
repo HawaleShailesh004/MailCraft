@@ -229,7 +229,7 @@ const RichTextEditor = ({
       else doUndo();
       return;
     }
-    if (mod && (e.key.toLowerCase() === "y")) {
+    if (mod && e.key.toLowerCase() === "y") {
       e.preventDefault();
       doRedo();
       return;
@@ -264,7 +264,12 @@ const RichTextEditor = ({
   };
 
   const wordCount = useMemo(
-    () => (content || "").replace(/<[^>]*>/g, " ").trim().split(/\s+/).filter(Boolean).length,
+    () =>
+      (content || "")
+        .replace(/<[^>]*>/g, " ")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean).length,
     [content]
   );
   const charCount = useMemo(
@@ -276,30 +281,69 @@ const RichTextEditor = ({
     <div className="w-full border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
       {/* Toolbar */}
       <motion.div
-        className="flex flex-wrap items-center gap-1 p-3 border-b border-gray-200 bg-gray-50"
+        className="
+    flex items-center gap-1 p-3 border-b border-gray-200 bg-gray-50
+    overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent
+  "
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
         onMouseDown={(e) => e.preventDefault()} // prevent toolbar click from blurring editor
+        style={{
+          WebkitOverflowScrolling: "touch", // smooth scroll on iOS
+          maxWidth: "100vw",
+        }}
       >
         {/* Text styling */}
         <IconBtn onClick={() => formatText("bold")} title="Bold" Icon={Bold} />
-        <IconBtn onClick={() => formatText("italic")} title="Italic" Icon={Italic} />
-        <IconBtn onClick={() => formatText("underline")} title="Underline" Icon={Underline} />
+        <IconBtn
+          onClick={() => formatText("italic")}
+          title="Italic"
+          Icon={Italic}
+        />
+        <IconBtn
+          onClick={() => formatText("underline")}
+          title="Underline"
+          Icon={Underline}
+        />
 
         <Divider />
 
         {/* Lists & Quote */}
-        <IconBtn onClick={() => formatText("insertUnorderedList")} title="Bulleted list" Icon={List} />
-        <IconBtn onClick={() => formatText("formatBlock", "<blockquote>")} title="Quote" Icon={Quote} />
+        <IconBtn
+          onClick={() => formatText("insertUnorderedList")}
+          title="Bulleted list"
+          Icon={List}
+        />
+        <IconBtn
+          onClick={() => formatText("formatBlock", "<blockquote>")}
+          title="Quote"
+          Icon={Quote}
+        />
 
         <Divider />
 
         {/* Alignment */}
-        <IconBtn onClick={() => formatText("justifyLeft")} title="Align left" Icon={AlignLeft} />
-        <IconBtn onClick={() => formatText("justifyCenter")} title="Align center" Icon={AlignCenter} />
-        <IconBtn onClick={() => formatText("justifyRight")} title="Align right" Icon={AlignRight} />
-        <IconBtn onClick={() => formatText("justifyFull")} title="Justify" Icon={AlignJustify} />
+        <IconBtn
+          onClick={() => formatText("justifyLeft")}
+          title="Align left"
+          Icon={AlignLeft}
+        />
+        <IconBtn
+          onClick={() => formatText("justifyCenter")}
+          title="Align center"
+          Icon={AlignCenter}
+        />
+        <IconBtn
+          onClick={() => formatText("justifyRight")}
+          title="Align right"
+          Icon={AlignRight}
+        />
+        <IconBtn
+          onClick={() => formatText("justifyFull")}
+          title="Justify"
+          Icon={AlignJustify}
+        />
 
         <Divider />
 
@@ -313,10 +357,15 @@ const RichTextEditor = ({
           Icon={Link2}
         />
 
-        {/* Undo / Redo */}
         <Divider />
+
+        {/* Undo / Redo */}
         <IconBtn onClick={doUndo} title="Undo (Ctrl/Cmd + Z)" Icon={Undo} />
-        <IconBtn onClick={doRedo} title="Redo (Ctrl/Cmd + Y / Shift+Z)" Icon={Redo} />
+        <IconBtn
+          onClick={doRedo}
+          title="Redo (Ctrl/Cmd + Y / Shift+Z)"
+          Icon={Redo}
+        />
 
         <Divider />
 
@@ -331,16 +380,29 @@ const RichTextEditor = ({
           title="Insert signature"
           Icon={PenLine}
         />
-        <IconBtn onClick={() => insertAtCursor("<hr/>")} title="Insert divider" Icon={Minus} />
-        <IconBtn onClick={() => formatText("removeFormat")} title="Clear formatting" Icon={Trash2} />
+        <IconBtn
+          onClick={() => insertAtCursor("<hr/>")}
+          title="Insert divider"
+          Icon={Minus}
+        />
+        <IconBtn
+          onClick={() => formatText("removeFormat")}
+          title="Clear formatting"
+          Icon={Trash2}
+        />
 
-        <div className="ml-auto text-xs text-gray-500 px-2 py-1 bg-blue-50 rounded-md">
+        <div className="ml-auto text-xs text-gray-500 px-2 py-1 whitespace-nowrap bg-blue-50 rounded-md">
           AI suggestions are highlighted
         </div>
       </motion.div>
 
       {/* Editor */}
-      <motion.div className="relative" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+      <motion.div
+        className="relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+      >
         <div
           ref={editorRef}
           contentEditable
@@ -362,10 +424,10 @@ const RichTextEditor = ({
         />
 
         {!content && !isEditing && (
-          <div className="absolute top-6 left-6 text-gray-400 pointer-events-none">{placeholder}</div>
+          <div className="absolute top-6 left-6 text-gray-400 pointer-events-none">
+            {placeholder}
+          </div>
         )}
-
-        
       </motion.div>
 
       {/* Status + Send */}
@@ -373,7 +435,6 @@ const RichTextEditor = ({
         <span>
           Words: {wordCount} • Characters: {charCount}
         </span>
-       
       </div>
     </div>
   );

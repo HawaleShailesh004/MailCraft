@@ -28,17 +28,22 @@ const EmailSettingsStep = ({ data, update, generateEmail, isGenerating }) => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Email Length
           </label>
-          <select
-            className="input-field"
-            value={data.emailSettings.length}
-            onChange={(e) =>
-              update("emailSettings", { length: e.target.value })
-            }
-          >
-            <option value="short">Short (150-200 words)</option>
-            <option value="medium">Medium (200-300 words)</option>
-            <option value="long">Long (300-400 words)</option>
-          </select>
+          <div className="flex items-center space-x-2 sm:space-x-4 w-full">
+            <select
+              className="
+      input-field 
+      w-full sm:w-auto 
+      min-w-0 sm:min-w-[200px] 
+      flex-shrink
+    "
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
+            >
+              <option value="all">All Templates</option>
+              <option value="high-performance">High Performance (85%+)</option>
+              <option value="recent">Recently Used</option>
+            </select>
+          </div>
         </div>
       </div>
 

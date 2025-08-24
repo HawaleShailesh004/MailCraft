@@ -55,35 +55,6 @@ const EmailWizard = () => {
     "Preview & Edit",
   ];
 
-  const useTemplate = (template) => {
-    // update wizard with template subject/body
-    setWizardData((prev) => ({
-      ...prev,
-      generatedEmail: {
-        subject: template.subject,
-        body: template.body,
-      },
-    }));
-
-    // jump to Preview & Edit
-    setCurrentStep(4);
-
-    // update usage count
-    setTemplates((prevTemplates) => {
-      const updated = prevTemplates.map((t) =>
-        t.id === template.id
-          ? {
-              ...t,
-              usageCount: (t.usageCount || 0) + 1,
-              lastUsed: new Date().toISOString(),
-            }
-          : t
-      );
-      localStorage.setItem("emailTemplates", JSON.stringify(updated));
-      return updated;
-    });
-  };
-
   const updateWizardData = (section, data) => {
     setWizardData((prev) => ({
       ...prev,
@@ -97,9 +68,7 @@ const EmailWizard = () => {
 
   const generateEmail = async () => {
     setIsGenerating(true);
-
     let emailData = await generateEmailByAI(wizardData);
-
     setWizardData((prev) => ({ ...prev, generatedEmail: emailData }));
     setIsGenerating(false);
     setCurrentStep(4); // go to Preview & Edit step
@@ -125,25 +94,38 @@ const EmailWizard = () => {
     />,
   ];
 
+  // Filter step labels for mobile: only prev, current, next
+  const getVisibleSteps = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
+      return steps.filter((_, idx) =>
+        [currentStep - 1, currentStep, currentStep + 1].includes(idx)
+      );
+    }
+    return steps;
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-8 w-full overflow-x-hidden">
+      <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             Email Generation Wizard
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600">
             Let's create your personalized cold email step by step
           </p>
         </div>
 
-        <Stepper
-          steps={steps}
-          currentStep={currentStep}
-          onStepClick={setCurrentStep}
-        />
+        {/* Stepper - responsive */}
+        <div className="overflow-x-auto sm:overflow-visible">
+          <Stepper
+            steps={getVisibleSteps()}
+            currentStep={currentStep}
+            onStepClick={setCurrentStep}
+          />
+        </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 max-w-full">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
@@ -151,17 +133,18 @@ const EmailWizard = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3 }}
+              className="w-full"
             >
               {stepComponents[currentStep]}
             </motion.div>
           </AnimatePresence>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-12 pt-8 border-t border-gray-200 gap-4">
             <button
               onClick={prevStep}
               disabled={currentStep === 0}
-              className="btn-secondary flex items-center space-x-2 disabled:opacity-50"
+              className="btn-secondary w-full sm:w-auto flex justify-center items-center space-x-2 disabled:opacity-50"
             >
               <ArrowLeft className="w-4 h-4" /> <span>Previous</span>
             </button>
@@ -169,7 +152,7 @@ const EmailWizard = () => {
             {currentStep < 3 && (
               <button
                 onClick={nextStep}
-                className="btn-primary flex items-center space-x-2"
+                className="btn-primary w-full sm:w-auto flex justify-center items-center space-x-2"
               >
                 <span>Next</span> <ArrowRight className="w-4 h-4" />
               </button>
@@ -179,7 +162,7 @@ const EmailWizard = () => {
               <button
                 onClick={generateEmail}
                 disabled={isGenerating}
-                className="btn-primary flex items-center space-x-2 disabled:opacity-50"
+                className="btn-primary w-full sm:w-auto flex justify-center items-center space-x-2 disabled:opacity-50"
               >
                 {isGenerating ? (
                   <>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, X, Plus } from "lucide-react";
+import { Sparkles, X, Plus, FileText } from "lucide-react";
 import getTextfromFile from "../../../AI Helper/ExtractText";
 
 const PersonalInfoStep = ({ data, update }) => {
@@ -8,7 +8,7 @@ const PersonalInfoStep = ({ data, update }) => {
   const [resumeFile, setResumeFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 📝 AI Resume Extraction (like Smart Extraction button)
+  // 📝 AI Resume Extraction
   const extractFromResume = async () => {
     if (!resumeFile) {
       alert("Please select a resume first!");
@@ -18,15 +18,9 @@ const PersonalInfoStep = ({ data, update }) => {
     setLoading(true);
     try {
       let result = await getTextfromFile(resumeFile);
-
-      // Fill all input fields from AI response
-      console.log("Before any changes in frontend", result);
-
       result = result.replace(/^```(?:json)?\s*/, "").replace(/```$/, "");
-
       const object = await JSON.parse(result);
-      console.log("Full Result", object);
-      console.log("Personal Result", object?.personalInfo);
+
       update("personalInfo", {
         skills: object?.personalInfo?.skills || [],
         projects: object?.personalInfo?.projects || [],
@@ -35,7 +29,7 @@ const PersonalInfoStep = ({ data, update }) => {
         links: object?.personalInfo?.links || [],
         additionalInfo: object?.personalInfo?.additionalInfo || "",
       });
-      alert("✨ Smart extraction applied! All fields filled from resume");
+      alert("✨ Smart extraction applied! Fields filled from resume.");
     } catch (err) {
       console.error("Error extracting text:", err);
       alert("Failed to extract details from resume.");
@@ -44,7 +38,7 @@ const PersonalInfoStep = ({ data, update }) => {
     }
   };
 
-  // 🔹 File selection triggers preview and AI extraction button
+  // File handling
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -55,7 +49,7 @@ const PersonalInfoStep = ({ data, update }) => {
     document.getElementById("resume-upload").click();
   };
 
-  // 🔹 Skills helpers
+  // Skill helpers
   const addSkill = () => {
     if (!skillInput.trim()) return;
     update("personalInfo", { skills: [...(data.skills || []), skillInput] });
@@ -66,7 +60,7 @@ const PersonalInfoStep = ({ data, update }) => {
       skills: (data.skills || []).filter((s) => s !== skill),
     });
 
-  // 🔹 Links helpers
+  // Link helpers
   const addLink = () => {
     if (!linkInput.trim()) return;
     update("personalInfo", { links: [...(data.links || []), linkInput] });
@@ -77,7 +71,7 @@ const PersonalInfoStep = ({ data, update }) => {
       links: (data.links || []).filter((l) => l !== link),
     });
 
-  // 🔹 List helpers for projects, experience, education
+  // List helpers
   const addItem = (field, newItem) =>
     update("personalInfo", { [field]: [...(data[field] || []), newItem] });
 
@@ -99,22 +93,38 @@ const PersonalInfoStep = ({ data, update }) => {
         Personal Information
       </h3>
 
-      {/* AI Resume Extraction Section */}
+      {/* AI Resume Extraction */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Text */}
           <div className="flex items-start space-x-3">
-            <Sparkles className="w-5 h-5 text-blue-600 mt-2" />
+            <Sparkles className="w-5 h-5 text-blue-600 mt-1" />
             <div>
               <span className="font-medium text-blue-800 block">
                 AI Resume Extraction
               </span>
               <p className="text-sm text-blue-700">
-                Upload your resume or drag an image/TXT/DOCX and click Smart
-                Extract to auto-fill fields.
+                Upload your resume and click <b>Smart Extract</b> to auto-fill.
               </p>
+              {resumeFile && (
+                <div className="mt-2 flex items-center text-sm text-gray-700 bg-white border border-gray-200 rounded px-2 py-1 w-fit">
+                  <FileText className="w-4 h-4 mr-1 text-indigo-600" />
+                  <span className="truncate max-w-[180px]">
+                    {resumeFile.name}
+                  </span>
+                  <button
+                    onClick={() => setResumeFile(null)}
+                    className="ml-2 text-red-500 hover:text-red-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-          <div className="flex space-x-2">
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-2">
             <button
               type="button"
               onClick={triggerFileInput}
@@ -147,7 +157,7 @@ const PersonalInfoStep = ({ data, update }) => {
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Key Skills & Technologies *
         </label>
-        <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             className="input-field flex-1"
@@ -156,11 +166,7 @@ const PersonalInfoStep = ({ data, update }) => {
             onKeyDown={(e) => e.key === "Enter" && addSkill()}
             placeholder="Type a skill and press Enter"
           />
-          <button
-            type="button"
-            onClick={addSkill}
-            className="btn-secondary px-3"
-          >
+          <button type="button" onClick={addSkill} className="btn-secondary">
             +
           </button>
         </div>
@@ -189,7 +195,7 @@ const PersonalInfoStep = ({ data, update }) => {
           Projects
         </label>
         {(data.projects || []).map((p, idx) => (
-          <div key={idx} className="flex space-x-2 mt-2">
+          <div key={idx} className="flex flex-col sm:flex-row gap-2 mt-2">
             <input
               type="text"
               className="input-field flex-1"
@@ -232,7 +238,7 @@ const PersonalInfoStep = ({ data, update }) => {
           Experience
         </label>
         {(data.experience || []).map((exp, idx) => (
-          <div key={idx} className="grid grid-cols-4 gap-2 mt-2">
+          <div key={idx} className="grid grid-cols-1 sm:grid-cols-5 gap-2 mt-2">
             <input
               type="text"
               className="input-field"
@@ -300,10 +306,10 @@ const PersonalInfoStep = ({ data, update }) => {
           Education
         </label>
         {(data.education || []).map((edu, idx) => (
-          <div key={idx} className="flex space-x-2 mt-2 text-sm">
+          <div key={idx} className="grid grid-cols-1 sm:grid-cols-4 gap-2 mt-2">
             <input
               type="text"
-              className="input-field w-[45%] text-sm"
+              className="input-field"
               placeholder="Institution"
               value={edu.institution}
               onChange={(e) =>
@@ -312,7 +318,7 @@ const PersonalInfoStep = ({ data, update }) => {
             />
             <input
               type="text"
-              className="input-field w-[45%]"
+              className="input-field"
               placeholder="Degree"
               value={edu.degree}
               onChange={(e) =>
@@ -321,7 +327,7 @@ const PersonalInfoStep = ({ data, update }) => {
             />
             <input
               type="text"
-              className="input-field w-[5%] "
+              className="input-field"
               placeholder="Year"
               value={edu.year}
               onChange={(e) =>
@@ -353,7 +359,7 @@ const PersonalInfoStep = ({ data, update }) => {
         <label className="block text-sm font-medium text-gray-700">
           Portfolio/Links
         </label>
-        <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             className="input-field flex-1"
@@ -361,11 +367,7 @@ const PersonalInfoStep = ({ data, update }) => {
             onChange={(e) => setLinkInput(e.target.value)}
             placeholder="linkedin.com/in/yourname"
           />
-          <button
-            type="button"
-            onClick={addLink}
-            className="btn-secondary px-3"
-          >
+          <button type="button" onClick={addLink} className="btn-secondary">
             +
           </button>
         </div>

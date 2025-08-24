@@ -147,7 +147,7 @@ const TemplatesPage = () => {
           transition={{ duration: 0.5 }}
         >
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2 pt-20">
               Email Templates
             </h1>
             <p className="text-lg text-gray-600">
@@ -183,19 +183,23 @@ const TemplatesPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex items-center space-x-4">
-              <select
-                className="input-field min-w-[200px]"
-                value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
-              >
-                <option value="all">All Templates</option>
-                <option value="high-performance">
-                  High Performance (85%+)
-                </option>
-                <option value="recent">Recently Used</option>
-              </select>
-            </div>
+           <div className="flex items-center space-x-2 sm:space-x-4 w-full">
+  <select
+    className="
+      input-field 
+      w-full sm:w-auto 
+      min-w-0 sm:min-w-[200px] 
+      flex-shrink
+    "
+    value={selectedFilter}
+    onChange={(e) => setSelectedFilter(e.target.value)}
+  >
+    <option value="all">All Templates</option>
+    <option value="high-performance">High Performance (85%+)</option>
+    <option value="recent">Recently Used</option>
+  </select>
+</div>
+
           </div>
         </motion.div>
 

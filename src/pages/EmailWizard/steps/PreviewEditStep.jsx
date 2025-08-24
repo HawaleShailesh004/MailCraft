@@ -2,7 +2,6 @@ import { Copy, Save, Download, Mail, Sparkles, X } from "lucide-react";
 import RichTextEditor from "../../../components/RichTextEditor";
 import { useState } from "react";
 import {
-  generateEmailByAI,
   regenerateEmailByAI,
   regenerateEmailSubjectByAI,
   generateTemplatedEmailByAI,
@@ -28,28 +27,24 @@ const PreviewEditStep = ({
 
   const handleSave = async () => {
     try {
-      // Step 1: Ask AI to convert actual email into template
-      console.log(data);
       const templated = await generateTemplatedEmailByAI({
         subject: data.subject,
         body: data.body,
       });
 
-      // Step 2: Build template object
       const newTemplateWithData = {
         id: Date.now().toString(),
         title: templated.title || "Custom Template",
-        subject: templated.subject, // AI returned subject with placeholders
+        subject: templated.subject,
         preview: templated.body.substring(0, 100),
         usageCount: 0,
         lastUsed: new Date().toISOString(),
         aiResponseScore: templated.score || 0,
         tags: templated.tags || [],
         createdAt: new Date().toISOString(),
-        body: templated.body, // AI returned body with placeholders
+        body: templated.body,
       };
 
-      // Step 3: Save into localStorage
       const savedTemplates =
         JSON.parse(localStorage.getItem("emailTemplates")) || [];
       savedTemplates.push(newTemplateWithData);
@@ -80,10 +75,7 @@ const PreviewEditStep = ({
     setShowSendModal(false);
   };
 
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSendViaGmail = () => {
     if (!validateEmail(recipientEmail)) {
@@ -97,17 +89,14 @@ const PreviewEditStep = ({
     closeSendModal();
   };
 
-  // ---- Email Body / Full Regeneration ----
+  // ---- AI Actions ----
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
       const generatedEmail = await regenerateEmailByAI(
-        {
-          ...allData,
-        },
+        { ...allData },
         userComment
       );
-      console.log("Generated EmailData", generatedEmail);
       setWizardData((prev) => ({ ...prev, generatedEmail }));
     } catch (err) {
       console.error(err);
@@ -117,7 +106,6 @@ const PreviewEditStep = ({
     }
   };
 
-  // ---- Subject Regeneration ----
   const handleRegenerateSubject = async () => {
     setIsGenerating(true);
     try {
@@ -156,45 +144,30 @@ const PreviewEditStep = ({
   return (
     <div className="space-y-6">
       {/* Header Actions */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h3 className="text-2xl font-bold text-gray-900">Preview & Edit</h3>
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={handleCopy}
-            className="btn-secondary flex items-center space-x-2"
-          >
+        <div className="flex flex-wrap gap-2">
+          <button onClick={handleCopy} className="btn-secondary flex items-center space-x-2">
             <Copy className="w-4 h-4" /> <span>Copy</span>
           </button>
-
           {!isTemplateMode && (
-            <button
-              onClick={handleSave}
-              className="btn-secondary flex items-center space-x-2"
-            >
+            <button onClick={handleSave} className="btn-secondary flex items-center space-x-2">
               <Save className="w-4 h-4" /> <span>Save</span>
             </button>
           )}
-          <button
-            onClick={handleDownload}
-            className="btn-secondary flex items-center space-x-2"
-          >
+          <button onClick={handleDownload} className="btn-secondary flex items-center space-x-2">
             <Download className="w-4 h-4" /> <span>Download</span>
           </button>
-          <button
-            onClick={openSendModal}
-            className="btn-primary flex items-center space-x-2"
-          >
+          <button onClick={openSendModal} className="btn-primary flex items-center space-x-2">
             <Mail className="w-4 h-4" /> <span>Send</span>
           </button>
         </div>
       </div>
 
       {/* Subject */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row items-start justify-between gap-4">
-        <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Subject Line
-          </label>
+      <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex-1 w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Subject Line</label>
           <input
             type="text"
             className="input-field w-full"
@@ -203,28 +176,22 @@ const PreviewEditStep = ({
             placeholder="Enter your subject line..."
           />
         </div>
-
-        {/* ❌ Hide regenerate subject if in template mode */}
         {!isTemplateMode && (
           <button
             type="button"
             onClick={handleRegenerateSubject}
             disabled={isGenerating}
-            className="btn-secondary flex items-center space-x-2 self-end"
+            className="btn-secondary flex items-center space-x-2 self-end md:self-center"
           >
             <Sparkles className="w-4 h-4 animate-pulse" />
-            <span>
-              {isGenerating ? "Regenerating..." : "Regenerate Subject"}
-            </span>
+            <span>{isGenerating ? "Regenerating..." : "Regenerate Subject"}</span>
           </button>
         )}
       </div>
 
       {/* Email Body */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Email Body
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Email Body</label>
         <RichTextEditor
           content={data.body}
           onChange={handleEmailContentChange}
@@ -232,7 +199,7 @@ const PreviewEditStep = ({
         />
       </div>
 
-      {/* ❌ Hide comment + regenerate if in template mode */}
+      {/* Feedback & Regenerate */}
       {!isTemplateMode && (
         <>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
@@ -247,7 +214,6 @@ const PreviewEditStep = ({
             />
           </div>
 
-          {/* Full Regenerate Button */}
           <div className="flex justify-end">
             <button
               type="button"
@@ -256,28 +222,23 @@ const PreviewEditStep = ({
               className="btn-secondary flex items-center space-x-2"
             >
               <Sparkles className="w-5 h-5 animate-pulse" />
-              <span>
-                {isGenerating ? "Generating..." : "Regenerate Full Email"}
-              </span>
+              <span>{isGenerating ? "Generating..." : "Regenerate Full Email"}</span>
             </button>
           </div>
 
-          {/* Info */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-700 leading-relaxed">
-              💡 Use the text area above to provide comments or feedback to
-              improve the AI-generated email. You can regenerate the full email
-              or only the subject. Edit freely, then copy, save, download, or
-              send.
+              💡 Use the text area above to provide comments or feedback to improve the AI-generated email.
+              You can regenerate the full email or only the subject. Edit freely, then copy, save, download, or send.
             </p>
           </div>
         </>
       )}
 
-      {/* --- Gmail Modal --- */}
+      {/* Gmail Modal */}
       {showSendModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl p-6 w-96 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md relative">
             <button onClick={closeSendModal} className="absolute top-3 right-3">
               <X className="w-5 h-5" />
             </button>
@@ -289,16 +250,10 @@ const PreviewEditStep = ({
               value={recipientEmail}
               onChange={(e) => setRecipientEmail(e.target.value)}
             />
-            {emailError && (
-              <p className="text-red-600 text-sm mb-2">{emailError}</p>
-            )}
+            {emailError && <p className="text-red-600 text-sm mb-2">{emailError}</p>}
             <div className="flex justify-end gap-3">
-              <button onClick={closeSendModal} className="btn-secondary">
-                Cancel
-              </button>
-              <button onClick={handleSendViaGmail} className="btn-primary">
-                Open Gmail
-              </button>
+              <button onClick={closeSendModal} className="btn-secondary">Cancel</button>
+              <button onClick={handleSendViaGmail} className="btn-primary">Open Gmail</button>
             </div>
           </div>
         </div>

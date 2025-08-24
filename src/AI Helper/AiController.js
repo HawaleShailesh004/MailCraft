@@ -287,7 +287,20 @@ BODY: ${body}
     temperature: 0.3,
   });
 
-  return JSON.parse(response.choices[0].message.content);
+  let content = response.choices[0]?.message?.content?.trim() || "{}";
+
+  // -----------------------
+  // 3. Clean + Parse JSON
+  // -----------------------
+
+  let newContent = content
+    .replace(/^```(?:json)?\s*/, "")
+    .replace(/```$/, "")
+    .trim();
+
+  const parsed = JSON.parse(newContent);
+
+  return parsed;
 };
 
 export default getJobDetailsFromDescription;
